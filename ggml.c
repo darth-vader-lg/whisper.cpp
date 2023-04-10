@@ -29,6 +29,8 @@
 
 #if !defined(__MINGW32__)
 #include <Windows.h>
+#include <isa_availability.h>
+extern int __isa_available;
 #else
 // ref: https://github.com/ggerganov/whisper.cpp/issues/168
 #include <windows.h>
@@ -10419,7 +10421,11 @@ size_t ggml_quantize_q4_1(const float * src, void * dst, int n, int k, int qk, i
 
 int ggml_cpu_has_avx(void) {
 #if defined(__AVX__)
+#if defined(_MSC_VER)
+    return __isa_available >= __ISA_AVAILABLE_AVX;
+#else
     return 1;
+#endif
 #else
     return 0;
 #endif
@@ -10427,7 +10433,11 @@ int ggml_cpu_has_avx(void) {
 
 int ggml_cpu_has_avx2(void) {
 #if defined(__AVX2__)
+#if defined(_MSC_VER)
+    return __isa_available >= __ISA_AVAILABLE_AVX2;
+#else
     return 1;
+#endif
 #else
     return 0;
 #endif
@@ -10435,7 +10445,11 @@ int ggml_cpu_has_avx2(void) {
 
 int ggml_cpu_has_avx512(void) {
 #if defined(__AVX512F__)
+#if defined(_MSC_VER)
+    return __isa_available >= __ISA_AVAILABLE_AVX512;
+#else
     return 1;
+#endif
 #else
     return 0;
 #endif
